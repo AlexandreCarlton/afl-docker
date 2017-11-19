@@ -1,0 +1,29 @@
+version: '3'
+services:
+  afl-primary:
+    build: .
+    volumes:
+      - afl-results:/results
+    entrypoint: /usr/local/bin/afl-fuzz
+    command: [ "-i", "/app/tests", "-o", "/results", "-M", "primary", "/app/maybe-crash"]
+
+  # Secondary instances can be used to parallelise a job.
+  # It is necessary that they maintain access to the same output directory (/results).
+  afl-secondary-01:
+    build: .
+    volumes:
+      - afl-results:/results
+    entrypoint: /usr/local/bin/afl-fuzz
+    command: [ "-i", "/app/tests", "-o", "/results", "-M", "secondary-01", "/app/maybe-crash"]
+  afl-secondary-02:
+    build: .
+    volumes:
+      - afl-results:/results
+    entrypoint: /usr/local/bin/afl-fuzz
+    command: [ "-i", "/app/tests", "-o", "/results", "-M", "secondary-02", "/app/maybe-crash"]
+
+volumes:
+  # Use the following to locate the directory:
+  #   docker volume inspect afl-results | jq '.[] | .Mountpoint'
+  # or docker-cp from an existing container using it.
+  afl-results:
