@@ -1,6 +1,10 @@
 FROM centos:7
 
 RUN yum install -y \
+      centos-release-scl \
+      epel-release
+
+RUN yum install -y \
       curl \
       @'Development Tools' && \
     yum clean all
