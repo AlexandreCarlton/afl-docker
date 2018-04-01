@@ -5,24 +5,17 @@ services:
     volumes:
       - afl-results:/results
     entrypoint: /usr/local/bin/afl-fuzz
-    command: [ "-i", "/app/tests", "-o", "/results", "-M", "primary", "/app/maybe-crash"]
+    command: ["-M", "primary", "-i", "/app/tests", "-o", "/results", "/app/maybe-crash"]
 
   # Secondary instances can be used to parallelise a job.
   # It is necessary that they maintain access to the same output directory (/results).
-  # Note the differing arguments for '-S' - these are the identifiers for each secondary fuzzer.
-  # There is currently no way to use the '--scale' option to create containers with accessible unique identifiers.
-  secondary-01:
+  # We can create more fuzzers using '--scale secondary=N', where N > 1.
+  secondary:
     build: .
     volumes:
       - afl-results:/results
-    entrypoint: /usr/local/bin/afl-fuzz
-    command: [ "-i", "/app/tests", "-o", "/results", "-S", "secondary-01", "/app/maybe-crash"]
-  secondary-02:
-    build: .
-    volumes:
-      - afl-results:/results
-    entrypoint: /usr/local/bin/afl-fuzz
-    command: [ "-i", "/app/tests", "-o", "/results", "-S", "secondary-02", "/app/maybe-crash"]
+    entrypoint: /app/afl-fuzz-secondary
+    command: ["-i", "/app/tests", "-o", "/results", "/app/maybe-crash"]
 
 volumes:
   # Use the following to locate the directory:

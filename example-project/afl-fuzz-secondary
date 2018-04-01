@@ -1,0 +1,4 @@
+#!/bin/sh
+# We require a unique identifier for our secondary fuzzers.
+# This is not provided in the main docker-compose.yml file, so we leverage the uniqueness of the hostname instead.
+/usr/local/bin/afl-fuzz -S "$(hostname)" "$@"

@@ -9,10 +9,10 @@ Each container shares the same output [volume](https://docs.docker.com/engine/ad
 so that the results may be synchronised between each fuzzer.
 
 To automatically build the image (containing the binary) and start up a
-parallelised run, simply execute:
+parallelised run with one primary fuzzer and `n` secondary fuzzers, execute:
 
 ```bash
-$ docker-compose up
+$ docker-compose up --scale secondary=$n
 ```
 
 `--build` can be appended to force a rebuild of the image should the source
